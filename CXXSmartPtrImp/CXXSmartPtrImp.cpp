@@ -1,9 +1,6 @@
 ﻿#include "SmartPtr.h"
 #include "ReferCount.h"
 #include "Object.h"
-#include <vector>
-
-#include <iostream>
 
 using namespace std;
 
