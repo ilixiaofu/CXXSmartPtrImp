@@ -11,19 +11,19 @@ class ReferCount
 public:
 	ReferCount():refers(0)
 	{
-		LOG_INF("%s at line %d: refers = %d\n", __FUNCTION__, __LINE__, refers);
+		LOG_INF("%s construction\n", __FUNCTION__);
 	}
 	virtual ~ReferCount()
 	{
-		LOG_INF("%s at line %d: refers = %d\n", __FUNCTION__, __LINE__, refers);
+		LOG_INF("%s destruction at line %d: refers = %d\n", __FUNCTION__, __LINE__, refers);
 	}
 
 	void incCount(void)
 	{
 		__asm {
-			mov eax, [refers]
-			lock inc eax
-			mov [refers], eax
+			mov		eax, dword ptr[this]
+			lea		ecx, dword ptr[eax + 4]
+			lock	inc [ecx]
 		}
 		LOG_INF("%s at line %d: refers = %d\n", __FUNCTION__, __LINE__, refers);
 	}
@@ -31,9 +31,9 @@ public:
 	void decCount(void)
 	{
 		__asm {
-			mov eax, [refers]
-			lock dec eax
-			mov [refers], eax
+			mov		eax, dword ptr[this]
+			lea		ecx, dword ptr[eax + 4]
+			lock	dec [ecx]
 		}
 
 		if (refers == 0) {
